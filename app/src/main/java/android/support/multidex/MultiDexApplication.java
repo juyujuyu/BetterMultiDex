@@ -36,6 +36,6 @@ public class MultiDexApplication extends Application {
   @Override
   protected void attachBaseContext(Context base) {
     super.attachBaseContext(base);
-    MultiDex.install(this);
+    BetterMultiDex.install(this);
   }
 }

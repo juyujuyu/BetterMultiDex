@@ -54,7 +54,7 @@ import java.util.zip.ZipFile;
  * This library provides compatibility for platforms with API level 4 through 20. This library does
  * nothing on newer versions of the platform which provide built-in support for secondary dex files.
  */
-public final class MultiDex {
+public final class BetterMultiDex {
 
     static final String TAG = "MultiDex";
 
@@ -77,7 +77,7 @@ public final class MultiDex {
     private static final boolean IS_VM_MULTIDEX_CAPABLE =
             isVMMultidexCapable(System.getProperty("java.vm.version"));
 
-    private MultiDex() {}
+    private BetterMultiDex() {}
 
     /**
      * Patches the application context class loader by appending extra dex files

@@ -34,6 +34,7 @@ import java.io.RandomAccessFile;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
@@ -46,7 +47,7 @@ import java.util.zip.ZipOutputStream;
  */
 final class MultiDexExtractor {
 
-    private static final String TAG = MultiDex.TAG;
+    private static final String TAG = BetterMultiDex.TAG;
 
     /**
      * We look for additional dex files named {@code classes2.dex},
@@ -63,6 +64,9 @@ final class MultiDexExtractor {
     private static final String KEY_TIME_STAMP = "timestamp";
     private static final String KEY_CRC = "crc";
     private static final String KEY_DEX_NUMBER = "dex.number";
+
+    private static final String SECONDARY_DEX_DIR = "assets/secondary_dexs/";
+    private static final ArrayList<ZipEntry> classEntrys = new ArrayList<>();
 
     /**
      * Size of reading buffers.
@@ -217,12 +221,17 @@ final class MultiDexExtractor {
         List<File> files = new ArrayList<File>();
 
         final ZipFile apk = new ZipFile(sourceApk);
+        findClassesInTargetDir(apk);
         try {
 
             int secondaryNumber = 2;
 
-            ZipEntry dexFile = apk.getEntry(DEX_PREFIX + secondaryNumber + DEX_SUFFIX);
-            while (dexFile != null) {
+//            ZipEntry dexFile = apk.getEntry(SECONDARY_DEX_DIR + DEX_PREFIX + secondaryNumber + DEX_SUFFIX);
+            ZipEntry dexFile;
+            int classEntryIndex = 0;
+            int classEntrySize = classEntrys.size();
+            while (classEntryIndex < classEntrySize) {
+                dexFile = classEntrys.get(classEntryIndex);
                 String fileName = extractedFilePrefix + secondaryNumber + EXTRACTED_SUFFIX;
                 File extractedFile = new File(dexDir, fileName);
                 files.add(extractedFile);
@@ -259,7 +268,8 @@ final class MultiDexExtractor {
                             secondaryNumber + ")");
                 }
                 secondaryNumber++;
-                dexFile = apk.getEntry(DEX_PREFIX + secondaryNumber + DEX_SUFFIX);
+                classEntryIndex++;
+//                dexFile = apk.getEntry(SECONDARY_DEX_DIR + DEX_PREFIX + secondaryNumber + DEX_SUFFIX);
             }
         } finally {
             try {
@@ -270,6 +280,18 @@ final class MultiDexExtractor {
         }
 
         return files;
+    }
+
+    private static void findClassesInTargetDir(ZipFile apk){
+        Enumeration enumerator = apk.entries();
+        while (enumerator.hasMoreElements())
+        {
+            ZipEntry entry = (ZipEntry) enumerator.nextElement();
+            if(entry.getName().contains(SECONDARY_DEX_DIR)){
+                Log.i("findClasses", "Classes Found:" + entry.getName());
+                classEntrys.add(entry);
+            }
+        }
     }
 
     /**
