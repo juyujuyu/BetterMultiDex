@@ -16,7 +16,7 @@ task deleteOldJar(type: Delete){
     delete 'release/BetterMultiDex.jar'
 }
 task exportJar(type: Copy) {
-    from ('build/intermediates/bundles/release/')
+    from ('build/intermediates/bundles/debug/')
     into ('release/')
     include ('classes.jar')
     rename('classes.jar', 'BetterMultiDex.jar')

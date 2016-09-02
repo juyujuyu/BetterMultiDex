@@ -91,11 +91,10 @@ public final class BetterMultiDex {
      */
     public static void install(Context context) {
         Log.i(TAG, "install");
-        if (IS_VM_MULTIDEX_CAPABLE) {
-            Log.i(TAG, "VM has multidex support, MultiDex support library is disabled.");
-            return;
-        }
-
+//        if (IS_VM_MULTIDEX_CAPABLE) {
+//            Log.i(TAG, "VM has multidex support, MultiDex support library is disabled.");
+//            return;
+//        }
         if (Build.VERSION.SDK_INT < MIN_SDK_VERSION) {
             throw new RuntimeException("Multi dex installation failed. SDK " + Build.VERSION.SDK_INT
                     + " is unsupported. Min SDK version is " + MIN_SDK_VERSION + ".");
