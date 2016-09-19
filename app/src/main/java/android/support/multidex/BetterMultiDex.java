@@ -455,9 +455,17 @@ public final class BetterMultiDex {
                 ArrayList<IOException> suppressedExceptions)
                         throws IllegalAccessException, InvocationTargetException,
                         NoSuchMethodException {
-            Method makeDexElements =
-                    findMethod(dexPathList, "makeDexElements", ArrayList.class, File.class,
-                            ArrayList.class);
+            Method makeDexElements;
+            if(Build.VERSION.SDK_INT < 23){
+                makeDexElements =
+                        findMethod(dexPathList, "makeDexElements", ArrayList.class, File.class,
+                                ArrayList.class);
+            }else{
+                makeDexElements =
+                        findMethod(dexPathList, "makePathElements", List.class, File.class,
+                                List.class);
+            }
+
 
             return (Object[]) makeDexElements.invoke(dexPathList, files, optimizedDirectory,
                     suppressedExceptions);
